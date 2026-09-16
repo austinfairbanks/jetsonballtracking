@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="320" viewBox="0 0 1000 320" role="img" aria-labelledby="title desc">
+  <title id="title">Camera tracking system</title>
+  <desc id="desc">Working: USB camera to YOLO11n segmentation on TensorRT. Planned: motion estimation, camera control and pan/tilt motors. Camera movement closes the feedback loop.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#9aaac0"/></marker>
+  </defs>
+  <rect width="1000" height="320" rx="16" fill="#111923"/>
+  <g font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Arial,sans-serif">
+    <text x="28" y="38" fill="#f0f5fb" font-size="22" font-weight="650">Camera tracking system</text>
+    <circle cx="764" cy="31" r="4" fill="#69d8af"/>
+    <text x="776" y="36" fill="#cad6e4" font-size="13">Working</text>
+    <circle cx="866" cy="31" r="4" fill="#91baff"/>
+    <text x="878" y="36" fill="#cad6e4" font-size="13">Planned</text>
+    <g fill="none" stroke="#9aaac0" stroke-width="1.5" marker-end="url(#arrow)">
+      <path d="M 202 145 H 219"/>
+      <path d="M 394 145 H 411" stroke-dasharray="4 4"/>
+      <path d="M 586 145 H 603" stroke-dasharray="4 4"/>
+      <path d="M 778 145 H 795" stroke-dasharray="4 4"/>
+      <path d="M 884 216 V 270 H 115 V 221" stroke-dasharray="5 5"/>
+    </g>
+    <g stroke-width="1.5">
+      <rect x="28" y="76" width="174" height="140" rx="10" fill="#142b29" stroke="#69d8af"/>
+      <rect x="220" y="76" width="174" height="140" rx="10" fill="#142b29" stroke="#69d8af"/>
+      <rect x="412" y="76" width="174" height="140" rx="10" fill="#1a2434" stroke="#91baff" stroke-dasharray="5 4"/>
+      <rect x="604" y="76" width="174" height="140" rx="10" fill="#1a2434" stroke="#91baff" stroke-dasharray="5 4"/>
+      <rect x="796" y="76" width="174" height="140" rx="10" fill="#1a2434" stroke="#91baff" stroke-dasharray="5 4"/>
+    </g>
+    <g font-size="11" font-weight="600" letter-spacing="1.2">
+      <text x="44" y="101" fill="#69d8af">01 / CAPTURE</text>
+      <text x="236" y="101" fill="#69d8af">02 / PERCEPTION</text>
+      <text x="428" y="101" fill="#91baff">03 / ESTIMATION</text>
+      <text x="620" y="101" fill="#91baff">04 / CONTROL</text>
+      <text x="812" y="101" fill="#91baff">05 / ACTUATION</text>
+    </g>
+    <g fill="#f0f5fb" font-size="19" font-weight="600">
+      <text x="44" y="137">USB camera</text>
+      <text x="236" y="137">YOLO11n-seg</text>
+      <text x="428" y="137">Ball tracking</text>
+      <text x="620" y="137">Camera control</text>
+      <text x="812" y="137">Pan / tilt</text>
+    </g>
+    <g fill="#bacadb" font-size="13">
+      <text x="44" y="167">Global shutter</text><text x="44" y="189">1280 × 720 capture</text>
+      <text x="236" y="167">TensorRT FP16</text><text x="236" y="189">Box · mask · center</text>
+      <text x="428" y="167">Position + velocity</text><text x="428" y="189">Predict through misses</text>
+      <text x="620" y="167">Image error → angles</text><text x="620" y="189">Calibrated commands</text>
+      <text x="812" y="167">Motor movement</text><text x="812" y="189">Keep the ball in view</text>
+    </g>
+    <rect x="270" y="255" width="460" height="29" fill="#111923"/>
+    <text x="500" y="275" fill="#bacadb" font-size="13" text-anchor="middle">Motor movement changes the next camera image</text>
+  </g>
+</svg>

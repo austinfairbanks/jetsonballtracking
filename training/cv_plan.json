@@ -1,0 +1,97 @@
+{
+  "model": "yolo11n-seg",
+  "folds": [
+    {
+      "stage": "fold1",
+      "yaml": "artifacts/training/yolo11n-seg-cv-v1/data/fold1.yaml",
+      "train_images": 330,
+      "val_images": 189,
+      "val_groups": [
+        7
+      ],
+      "train_groups": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ]
+    },
+    {
+      "stage": "fold2",
+      "yaml": "artifacts/training/yolo11n-seg-cv-v1/data/fold2.yaml",
+      "train_images": 360,
+      "val_images": 159,
+      "val_groups": [
+        1,
+        6
+      ],
+      "train_groups": [
+        2,
+        3,
+        4,
+        5,
+        7
+      ]
+    },
+    {
+      "stage": "fold3",
+      "yaml": "artifacts/training/yolo11n-seg-cv-v1/data/fold3.yaml",
+      "train_images": 348,
+      "val_images": 171,
+      "val_groups": [
+        2,
+        3,
+        4,
+        5
+      ],
+      "train_groups": [
+        1,
+        6,
+        7
+      ]
+    }
+  ],
+  "common_settings": {
+    "task": "segment",
+    "imgsz": 640,
+    "batch": 8,
+    "device": "mps",
+    "workers": 0,
+    "epochs": 100,
+    "patience": 20,
+    "seed": 42,
+    "deterministic": true,
+    "optimizer": "AdamW",
+    "lr0": 0.001,
+    "lrf": 0.01,
+    "weight_decay": 0.0005,
+    "warmup_epochs": 3.0,
+    "cos_lr": true,
+    "amp": false,
+    "cache": false,
+    "mask_ratio": 2,
+    "overlap_mask": true,
+    "mosaic": 1.0,
+    "close_mosaic": 10,
+    "mixup": 0.0,
+    "copy_paste": 0.0,
+    "degrees": 0.0,
+    "fliplr": 0.5,
+    "flipud": 0.0,
+    "plots": true,
+    "save": true,
+    "save_period": -1,
+    "verbose": false
+  },
+  "dataset_freeze_sha256": "1a491e5b3fd7d7dea32813312f2f3a45ed96e2ab3c293da328da58dfd9926a9d",
+  "dataset_manifest_sha256": "8fb0a3c1f4c194b7901a204198e9c15707d50008b140558fd1800d401edc6a7d",
+  "selection": "highest validation mask mAP50-95 per fold; latest epoch on ties",
+  "refit": "fresh pretrained initialization; median best fold epoch, rounded up; use final epoch EMA",
+  "test_policy": "group 8 excluded from all training and CV selection",
+  "prediction_confidence": 0.25,
+  "prediction_nms_iou": 0.7,
+  "development_images": 519,
+  "test_images": 123
+}

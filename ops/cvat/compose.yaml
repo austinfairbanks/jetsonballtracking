@@ -1,0 +1,121 @@
+name: jetson-volleyball-cvat
+
+x-backend: &backend
+  image: sha256:8fa87778b1079489836707eca9612f02a03a7adfa821edfad39fae1b12ca3f00
+  platform: linux/amd64
+  restart: unless-stopped
+  environment: &backend-env
+    CVAT_POSTGRES_HOST: db
+    CVAT_REDIS_INMEM_HOST: redis
+    CVAT_REDIS_INMEM_PORT: 6379
+    CVAT_REDIS_INMEM_PASSWORD: ''
+    CVAT_REDIS_ONDISK_HOST: cache
+    CVAT_REDIS_ONDISK_PORT: 6666
+    CVAT_OPA_URL: http://opa:8181
+    CVAT_ANALYTICS: '0'
+    CVAT_BASE_URL: ${CVAT_BASE_URL:-http://localhost:8082}
+    CVAT_NUM_PROXIES: '1'
+    ALLOWED_HOSTS: '*'
+    ADAPTIVE_AUTO_ANNOTATION: 'false'
+    CVAT_NUCLIO_HOST: sam2
+    CVAT_NUCLIO_PORT: '8070'
+    CVAT_NUCLIO_INVOKE_METHOD: dashboard
+    NUMPROCS: '1'
+    SMOKESCREEN_OPTS: ''
+    DJANGO_MODWSGI_EXTRA_ARGS: ''
+    no_proxy: db,redis,cache,opa,server,sam2,localhost
+  volumes:
+    - data:/home/django/data
+    - keys:/home/django/keys
+    - logs:/home/django/logs
+    - ../../dataset/keyframes:/home/django/share/keyframes:ro
+  depends_on:
+    - db
+    - redis
+    - cache
+
+services:
+  sam2:
+    build: ./sam2
+    platform: linux/arm64
+    restart: unless-stopped
+    mem_limit: 256m
+    cpus: 0.5
+    secrets:
+      - sam2_token
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    healthcheck:
+      test: [CMD, python, -c, "import urllib.request; urllib.request.urlopen('http://localhost:8070/health')"]
+      interval: 30s
+      timeout: 5s
+      start_period: 90s
+      retries: 3
+  db:
+    image: postgres:15-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_DB: cvat
+      POSTGRES_HOST_AUTH_METHOD: trust
+    volumes:
+      - database:/var/lib/postgresql/data
+  redis:
+    image: redis:7.2.11-alpine
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+    volumes:
+      - redis:/data
+  cache:
+    image: apache/kvrocks:2.15.0
+    restart: unless-stopped
+    init: true
+    volumes:
+      - cache:/var/lib/kvrocks
+  server:
+    <<: *backend
+    command: init run server nginx
+  worker:
+    <<: *backend
+    command: run worker import export annotation chunks notifications cleaning webhooks quality_reports consensus --with-scheduler
+  opa:
+    image: openpolicyagent/opa:1.12.2
+    restart: unless-stopped
+    command:
+      - run
+      - --server
+      - --addr=:8181
+      - --log-level=error
+      - --set=services.cvat.url=http://server:8080
+      - --set=bundles.cvat.service=cvat
+      - --set=bundles.cvat.resource=/api/auth/rules
+      - --set=bundles.cvat.polling.min_delay_seconds=5
+      - --set=bundles.cvat.polling.max_delay_seconds=15
+  ui:
+    image: sha256:5a0e2551ea24db0f3ea9966e4d7003c620b864447aa449847ffc1c8b8c88ccfb
+    platform: linux/amd64
+    restart: unless-stopped
+  proxy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    ports:
+      - '127.0.0.1:8082:8080'
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+    depends_on:
+      - server
+      - ui
+
+volumes:
+  database:
+  redis:
+  cache:
+  data:
+  keys:
+  logs:
+
+secrets:
+  sam2_token:
+    file: ./.local/sam2-token

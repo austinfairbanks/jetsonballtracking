@@ -1,0 +1,15 @@
+{
+    servers {
+        trusted_proxies static private_ranges
+    }
+}
+
+:8080 {
+    @backend path /api/* /static/* /admin* /django-rq*
+    handle @backend {
+        reverse_proxy server:8080
+    }
+    handle {
+        reverse_proxy ui:8000
+    }
+}

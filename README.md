@@ -6,7 +6,10 @@ I trained YOLO11n-seg on my own footage and deployed it on a Jetson for live
 detection and segmentation. Next is tracking the ball between frames and
 controlling pan/tilt motors to keep it in view.
 
-[![Live Jetson demo: volleyball boxes, masks and confidence](docs/media/live-preview.gif)](docs/media/jetson-demo.mp4)
+[![Jetson Ball Tracking: 20-second overview with real volleyball detections](docs/media/jetson-overview.jpg)](docs/media/jetson-overview.mp4)
+
+**[Watch the overview · 20 seconds](docs/media/jetson-overview.mp4)** — real
+detections, the hardware, TensorRT results, and the next steps for tracking and pan/tilt.
 
 **[Watch the full demo · 59 seconds](docs/media/jetson-demo.mp4)** — recorded
 backyard inference, the hardware, then the live Jetson feed.

@@ -1,0 +1,67 @@
+{
+  "schema_version": 1,
+  "snapshot_date": "2026-10-04",
+  "repository": "jetsonballtracking",
+  "source_commit": "98000cb12ad5495ab3370925732f3a61e17c0329",
+  "source_branch": "main",
+  "scope": "Agent-neutral summaries and restart context; no raw sessions, hidden reasoning, credentials, data or model artifacts.",
+  "threads": [
+    {
+      "id": "01a087a5-232a-72b3-bb89-5a8c807b9599",
+      "topic": "Volleyball data collection and labeling bootstrap",
+      "path": "threads/01a087a5-232a-72b3-bb89-5a8c807b9599.md",
+      "sha256": "ad2e3aa74a728d0b85c4fbe77053dee304da0896c915748e4f5bd2b051de7dac",
+      "source": "workstation conversation extract",
+      "history_updated_utc": "2026-09-13T23:18:13+00:00"
+    },
+    {
+      "id": "01a09d10-deb8-76c3-a9e9-3999d66f4e61",
+      "topic": "Upgrade labeling assistance to SAM 2.1",
+      "path": "threads/01a09d10-deb8-76c3-a9e9-3999d66f4e61.md",
+      "sha256": "1c2df1279fe9e9625c62a3c5765f3668d0ebc2c7bd1c366be0b96c963617ceed",
+      "source": "workstation conversation extract",
+      "history_updated_utc": "2026-09-14T00:47:20+00:00"
+    },
+    {
+      "id": "01a0a073-2c6e-7d60-b8b8-3532900e8213",
+      "topic": "Temporal tracking architecture discussion",
+      "path": "threads/01a0a073-2c6e-7d60-b8b8-3532900e8213.md",
+      "sha256": "385e5daf354a9477252ad718dc94ef3e54576977ce5653df529a6d79015ba984",
+      "source": "workstation conversation extract",
+      "history_updated_utc": "2026-09-14T15:13:08+00:00"
+    },
+    {
+      "id": "01a0a08a-8af3-7540-8246-eb08f97962b0",
+      "topic": "Recording groups and staged demo roadmap",
+      "path": "threads/01a0a08a-8af3-7540-8246-eb08f97962b0.md",
+      "sha256": "1ca03b5592c4fa48a9f4fd0d3f19f33457f1d9294f68ea344f4c0a86a99592fc",
+      "source": "workstation conversation extract",
+      "history_updated_utc": "2026-09-14T18:11:07+00:00"
+    },
+    {
+      "id": "01a0a1c5-2088-7b23-9293-f3f5fecc16c5",
+      "topic": "Jetson camera bring-up and hardware identification",
+      "path": "threads/01a0a1c5-2088-7b23-9293-f3f5fecc16c5.md",
+      "sha256": "49c93b6ad11c37d512f7d3d2d3c4cc73bb982b6c663ff6da52ede61e40bcb69d",
+      "source": "workstation conversation extract",
+      "history_updated_utc": "2026-09-16T18:45:27+00:00"
+    },
+    {
+      "id": "01a0a55a-a7d5-7640-b19e-238c65942b44",
+      "topic": "Dataset export, training, TensorRT and publication",
+      "path": "threads/01a0a55a-a7d5-7640-b19e-238c65942b44.md",
+      "sha256": "4347e3b988a550cd520995d4955722dcecd6c30d8862b5526e15fa7c5e7cb357",
+      "source": "workstation conversation extract",
+      "history_updated_utc": "2026-09-16T04:07:55+00:00"
+    },
+    {
+      "id": "01a0ad8a-0993-7392-8080-7783d5dde571",
+      "topic": "Project overview video",
+      "path": "threads/01a0ad8a-0993-7392-8080-7783d5dde571.md",
+      "sha256": "5751fd13f7db7f615ac4ce65f6fab51be165e42a119b0f880b0a16a10d6cdca3",
+      "source": "workstation conversation extract",
+      "history_updated_utc": "2026-09-17T14:00:37+00:00"
+    }
+  ],
+  "other_workspace_sessions": []
+}

@@ -1,0 +1,3 @@
+Custom volleyball segmentation is running on my Jetson Orin Nano. TensorRT cut model-call latency from 24.72 to 4.92 ms. Next: temporal tracking and pan/tilt.
+
+https://github.com/austinfairbanks/jetsonballtracking

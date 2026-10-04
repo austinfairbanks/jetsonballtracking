@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1920,height=1080">
+<title>Jetson Ball Tracking — See the ball.</title>
+<script src="assets/gsap.min.js"></script>
+<script src="assets/music/audio-data.js"></script>
+<style>
+@font-face{font-family:Geist;src:url('assets/fonts/geist-latin-900-normal.woff2') format('woff2');font-weight:900;font-display:block}
+@font-face{font-family:Geist;src:url('assets/fonts/geist-latin-500-normal.woff2') format('woff2');font-weight:500;font-display:block}
+@font-face{font-family:'Geist Mono';src:url('assets/fonts/geist-mono-latin-500-normal.woff2') format('woff2');font-weight:500;font-display:block}
+:root{--bg:#111923;--fg:#f0f5fb;--green:#69d8af;--muted:#bacadb;--rule:#344456;--future:#91baff;--card:#142b29}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden}body{background:var(--bg);color:var(--fg);font-family:Geist,sans-serif;font-weight:500}
+#root{position:relative;width:100%;height:100%;overflow:hidden;background:var(--bg)}
+h1,h2,h3,p{margin:0}.mono{font-family:'Geist Mono',monospace;font-weight:500}.bold{font-weight:900;letter-spacing:-.055em}.mint{color:var(--green)}
+.scene{position:absolute;inset:0;background:var(--bg);overflow:hidden}.eyebrow{font-size:27px;line-height:1.4;letter-spacing:.045em}.topline{position:absolute;top:61px;left:90px;right:90px;display:flex;justify-content:space-between;align-items:center}
+.number{font-size:27px;color:var(--muted)}.divider{height:2px;background:var(--rule)}
+.s1-rule{position:absolute;left:90px;top:142px;width:1030px}.s1-heading{position:absolute;left:80px;top:229px;width:1110px}
+.s1-heading span{display:block;font-size:179px;line-height:1.07;width:1100px}.s1-desc{position:absolute;left:94px;top:677px;font-size:44px;line-height:1.35;letter-spacing:-.025em;width:985px}
+.s1-desc span{display:block}.s1-model{position:absolute;left:94px;top:857px;display:flex;align-items:center;gap:23px;font-size:31px}.status-dot{height:13px;width:13px;border-radius:100%;background:var(--green)}
+.s1-footer{position:absolute;left:94px;top:944px;font-size:26px;color:var(--muted)}
+.portrait-border{position:absolute;left:1270px;top:129px;width:510px;height:904px;border:2px solid var(--green)}
+.portrait-tag{position:absolute;left:1270px;top:65px;font-size:25px;color:var(--green)}
+#yard-video{position:absolute;left:1272px;top:131px;width:506px;height:900px;object-fit:cover;z-index:2}
+.hardware-border{position:absolute;left:90px;top:129px;width:510px;height:904px;border:2px solid var(--green)}
+.hardware-tag{position:absolute;left:90px;top:65px;font-size:25px;color:var(--green)}
+#hardware-video{position:absolute;left:92px;top:131px;width:506px;height:900px;object-fit:cover;z-index:2}
+.hardware-heading{position:absolute;left:728px;top:233px;width:1085px}.hardware-heading span{display:block;font-size:148px;line-height:1.07}
+.hardware-meta{position:absolute;left:735px;top:112px;font-size:28px;color:var(--muted)}
+.hardware-model{position:absolute;left:737px;top:646px;font-size:47px;letter-spacing:-.025em}
+.hardware-camera{position:absolute;left:737px;top:727px;font-size:33px;color:var(--muted)}
+.pipeline{position:absolute;left:737px;top:862px;font-size:32px;color:var(--green);white-space:nowrap}.pipeline-rule{position:absolute;left:737px;top:819px;width:1050px}
+.s2-number{position:absolute;right:94px;bottom:56px;font-size:27px;color:var(--muted)}
+.live-heading{position:absolute;left:87px;top:118px;font-size:102px;line-height:1.1}.live-meta{position:absolute;right:94px;top:162px;font-size:26px;color:var(--green)}
+.live-border{position:absolute;left:90px;top:279px;width:1316px;height:744px;border:2px solid var(--green)}
+#live-video{position:absolute;left:92px;top:281px;width:1312px;height:738px;object-fit:contain;z-index:2}
+.live-side{position:absolute;left:1480px;top:392px;width:350px}.live-side-label{font-size:25px;color:var(--muted);margin-bottom:43px}
+.output-word{font-size:52px;line-height:1.2;letter-spacing:-.04em;margin-bottom:30px;display:flex;gap:16px;align-items:center}.tick{display:block;width:13px;height:13px;background:var(--green)}
+.live-fps{font-size:27px;color:var(--muted);line-height:1.5;margin-top:77px}.live-fps span{display:block}
+.bench-title{position:absolute;left:91px;top:211px;font-size:72px;line-height:1.1}.bench-number{position:absolute;left:74px;top:346px;width:990px;font-size:253px;line-height:1;letter-spacing:-.075em;color:var(--green)}
+.bench-caption{position:absolute;left:91px;top:652px;font-size:62px;line-height:1.1;letter-spacing:-.04em}
+.comparison{position:absolute;left:1120px;top:285px;width:700px}.compare-label{font-size:27px;color:var(--muted)}.compare-value{font-size:88px;line-height:1.3;letter-spacing:-.06em}.compare-value .unit{font-size:43px;margin-left:13px}.bar{height:14px;width:700px;background:var(--rule);transform-origin:left center;margin-top:10px;margin-bottom:69px}.bar.fast{width:139px;background:var(--green)}
+.conditions{position:absolute;left:94px;top:893px;font-size:27px;color:var(--muted);line-height:1.6;width:1570px}.conditions span{display:block}.bench-divider{position:absolute;left:1040px;top:263px;height:532px;width:2px;background:var(--rule)}
+.outro-heading{position:absolute;left:86px;top:226px;font-size:130px;line-height:1.1;width:1740px}.outro-heading span{color:var(--future)}
+.outro-work{position:absolute;left:94px;top:472px;font-size:54px;line-height:1.3;color:var(--muted)}
+.outro-path{position:absolute;left:94px;top:653px;width:1725px;height:109px;display:flex;align-items:center;gap:42px}.stage{border:2px solid var(--green);background:var(--card);padding:28px 31px;font-size:32px;color:var(--green)}.stage.future{border-style:dashed;border-color:var(--future);background:#1a2434;color:var(--future)}.path-arrow{font-size:50px;color:var(--muted)}
+.repo{position:absolute;left:94px;top:902px;font-size:31px;color:var(--fg);letter-spacing:-.035em}.outro-number{position:absolute;right:94px;bottom:57px;font-size:27px;color:var(--muted)}
+.progress{position:absolute;left:0;bottom:0;width:1920px;height:8px;background:var(--green);z-index:20;transform-origin:left center}
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="jetson-film" data-width="1920" data-height="1080" data-duration="20" data-fps="30">
+ <section id="scene-see" class="scene clip" data-start="0" data-duration="4" data-track-index="1">
+  <div class="topline"><span class="eyebrow mono">JETSON BALL TRACKING</span></div><div class="s1-rule divider"></div>
+  <h1 class="s1-heading bold"><span id="see-line1">See the</span><span id="see-line2" class="mint">ball.</span></h1>
+  <p id="see-desc" class="s1-desc"><span>Custom volleyball detection.</span><span>Trained on my own footage.</span></p>
+  <div id="see-model" class="s1-model mono"><i id="status-dot" class="status-dot"></i><span>YOLO11n-seg</span></div>
+  <div class="s1-footer mono">boxes · masks · confidence</div>
+  <div class="portrait-tag mono">RECORDED INFERENCE</div><div class="portrait-border"></div>
+ </section>
+ <video id="yard-video" class="clip" src="assets/video/backyard.mp4" data-start="0" data-duration="4" data-track-index="4" muted playsinline></video>
+ <section id="scene-hardware" class="scene clip" data-start="4" data-duration="4" data-track-index="1">
+  <div class="hardware-tag mono">THE HARDWARE</div><div class="hardware-border"></div>
+  <p class="hardware-meta mono">JETSON BALL TRACKING</p>
+  <h2 class="hardware-heading bold"><span id="hw-line1">Runs on</span><span id="hw-line2" class="mint">Jetson.</span></h2>
+  <p id="hardware-model" class="hardware-model">Jetson Orin Nano</p><p id="hardware-camera" class="hardware-camera">USB global-shutter camera</p>
+  <div class="pipeline-rule divider"></div><div id="pipeline" class="pipeline mono">PyTorch → ONNX → TensorRT FP16</div><span class="s2-number mono">02 / 05</span>
+ </section>
+ <video id="hardware-video" class="clip" src="assets/video/hardware.mp4" data-start="4" data-duration="4" data-track-index="4" muted playsinline></video>
+ <section id="scene-live" class="scene clip" data-start="8" data-duration="5" data-track-index="1">
+  <h2 id="live-heading" class="live-heading bold">Live on the Jetson.</h2><span class="live-meta mono">ACTUAL CAMERA FEED</span><div class="live-border"></div>
+  <div class="live-side"><p class="live-side-label mono">YOLO11n-seg</p><div id="word-boxes" class="output-word"><i class="tick"></i>boxes</div><div id="word-masks" class="output-word"><i class="tick"></i>masks</div><div id="word-confidence" class="output-word"><i class="tick"></i>confidence</div><p class="live-fps mono"><span>~15 FPS</span><span>live processing</span></p></div>
+ </section>
+ <video id="live-video" class="clip" src="assets/video/live.mp4" data-start="8" data-duration="5" data-track-index="4" muted playsinline></video>
+ <section id="scene-benchmark" class="scene clip" data-start="13" data-duration="4" data-track-index="1">
+  <div class="topline"><span class="eyebrow mono">MEASURED ON JETSON ORIN NANO</span><span class="number mono">04 / 05</span></div>
+  <h2 id="bench-title" class="bench-title bold">TensorRT FP16.</h2><div id="bench-number" class="bench-number bold">5.03×</div><p id="bench-caption" class="bench-caption">faster model calls.</p><div class="bench-divider"></div>
+  <div class="comparison"><p class="compare-label mono">PyTorch CUDA</p><p class="compare-value">24.72<span class="unit">ms</span></p><div id="pytorch-bar" class="bar"></div><p class="compare-label mono">TensorRT FP16</p><p class="compare-value mint">4.92<span class="unit">ms</span></p><div id="tensorrt-bar" class="bar fast"></div></div>
+  <p class="conditions mono"><span>Mean model-call latency · same checkpoint</span><span>25 W · 640 × 640 input · batch 1</span></p>
+ </section>
+ <section id="scene-next" class="scene clip" data-start="17" data-duration="3" data-track-index="1">
+  <div class="topline"><span class="eyebrow mono">JETSON BALL TRACKING</span></div>
+  <h2 id="outro-heading" class="outro-heading bold"><span>Next:</span> follow the ball.</h2><p id="outro-work" class="outro-work">Tracking + pan/tilt · planned</p>
+  <div id="outro-path" class="outro-path mono"><div class="stage">detection: working</div><span class="path-arrow">→</span><div class="stage future">tracking</div><span class="path-arrow">→</span><div class="stage future">pan / tilt</div></div>
+  <p id="repo" class="repo mono">github.com/austinfairbanks/jetsonballtracking</p><span class="outro-number mono">05 / 05</span>
+ </section>
+ <div id="progress" class="progress" data-layout-ignore></div>
+ <audio id="music" src="assets/music/bed.wav" data-start="0" data-duration="20" data-track-index="10" data-volume="0.30"></audio>
+ <audio id="reveal1" src="assets/sfx/reveal.ogg" data-start="0.24" data-duration="0.18" data-track-index="11" data-volume="0.58"></audio>
+ <audio id="reveal2" src="assets/sfx/reveal.ogg" data-start="4" data-duration="0.18" data-track-index="11" data-volume="0.58"></audio>
+ <audio id="reveal3" src="assets/sfx/reveal.ogg" data-start="8" data-duration="0.18" data-track-index="11" data-volume="0.58"></audio>
+ <audio id="reveal4" src="assets/sfx/reveal.ogg" data-start="13.11" data-duration="0.18" data-track-index="11" data-volume="0.62"></audio>
+ <audio id="reveal5" src="assets/sfx/reveal.ogg" data-start="17" data-duration="0.18" data-track-index="11" data-volume="0.55"></audio>
+</div>
+<script>
+const tl=gsap.timeline({paused:true});
+tl.fromTo('#see-line1',{y:48,opacity:0},{y:0,opacity:1,duration:.45,ease:'power3.out'},.04);
+tl.fromTo('#see-line2',{x:-58,opacity:0},{x:0,opacity:1,duration:.48,ease:'power4.out'},.23);
+tl.fromTo('#see-desc',{y:24,opacity:0},{y:0,opacity:1,duration:.4,ease:'power2.out'},.5);
+tl.fromTo('#see-model',{opacity:0},{opacity:1,duration:.4,ease:'power2.out'},.8);
+tl.fromTo('#hw-line1',{x:65,opacity:0},{x:0,opacity:1,duration:.45,ease:'power3.out'},4);
+tl.fromTo('#hw-line2',{x:65,opacity:0},{x:0,opacity:1,duration:.45,ease:'power3.out'},4.15);
+tl.fromTo('#hardware-model',{y:22,opacity:0},{y:0,opacity:1,duration:.4,ease:'power2.out'},4.38);
+tl.fromTo('#hardware-camera',{opacity:0},{opacity:1,duration:.4,ease:'power2.out'},4.55);
+tl.fromTo('#pipeline',{y:20,opacity:0},{y:0,opacity:1,duration:.4,ease:'power2.out'},4.91);
+tl.fromTo('#live-heading',{y:28,opacity:0},{y:0,opacity:1,duration:.45,ease:'power3.out'},8);
+// Strong cue at 8.74s: the live output labels arrive, then hold together.
+tl.fromTo('#word-boxes',{x:28,opacity:0},{x:0,opacity:1,duration:.35,ease:'power2.out'},8.74);
+tl.fromTo('#word-masks',{x:28,opacity:0},{x:0,opacity:1,duration:.35,ease:'power2.out'},8.9);
+tl.fromTo('#word-confidence',{x:28,opacity:0},{x:0,opacity:1,duration:.35,ease:'power2.out'},9.06);
+tl.fromTo('#bench-title',{y:24,opacity:0},{y:0,opacity:1,duration:.4,ease:'power2.out'},13);
+// beat-locked: 13.11s, benchmark payoff. Exact measured value; no invented count-up.
+tl.fromTo('#bench-number',{scale:1.12,opacity:0},{scale:1,opacity:1,duration:.55,ease:'expo.out'},13.11);
+tl.fromTo('#bench-caption',{y:20,opacity:0},{y:0,opacity:1,duration:.4,ease:'power2.out'},13.26);
+tl.fromTo('#pytorch-bar',{scaleX:0},{scaleX:1,duration:.55,ease:'power3.out'},13.16);
+tl.fromTo('#tensorrt-bar',{scaleX:0},{scaleX:1,duration:.55,ease:'power3.out'},13.38);
+tl.fromTo('#outro-heading',{x:-45,opacity:0},{x:0,opacity:1,duration:.4,ease:'power3.out'},17);
+tl.fromTo('#outro-work',{y:20,opacity:0},{y:0,opacity:1,duration:.35,ease:'power2.out'},17.15);
+// beat-locked: 17.47s, roadmap stages with an explicit planned label.
+tl.fromTo('#outro-path',{y:25,opacity:0},{y:0,opacity:1,duration:.38,ease:'power2.out'},17.47);
+tl.fromTo('#repo',{opacity:0},{opacity:1,duration:.3,ease:'power2.out'},17.4);
+tl.fromTo('#progress',{scaleX:0},{scaleX:1,duration:20,ease:'none'},0);
+// Subtle music response belongs to the status light, never to detection boxes.
+for(let f=0;f<120;f++)tl.set('#status-dot',{scale:1+AUDIO_DATA.frames[f].bands[0]*.18},f/30);
+window.__timelines=window.__timelines||{};
+window.__timelines['jetson-film']=tl;
+</script>
+</body>
+</html>

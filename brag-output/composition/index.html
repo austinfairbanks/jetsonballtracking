@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=1920, height=1080">
+  <title>/brag — you built it. now brag.</title>
+  <script src="assets/gsap.min.js"></script>
+  <script src="assets/music/audio-data.js"></script>
+  <style>
+    @font-face{font-family:Geist;src:url('assets/fonts/geist-latin-900-normal.woff2') format('woff2');font-weight:900;font-style:normal;font-display:block}
+    @font-face{font-family:Geist;src:url('assets/fonts/geist-latin-500-normal.woff2') format('woff2');font-weight:500;font-style:normal;font-display:block}
+    @font-face{font-family:'Geist Mono';src:url('assets/fonts/geist-mono-latin-500-normal.woff2') format('woff2');font-weight:500;font-style:normal;font-display:block}
+    :root{--orange:#f4430c;--ink:#210200;--cream:#ffede9;--dark:#130503;--muted:#c7b2ad}
+    *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden}
+    body{font-family:Geist,sans-serif;color:var(--ink);background:var(--orange);font-weight:500}
+    #root{position:relative;width:100%;height:100%;overflow:hidden;background:var(--orange)}
+    .scene{position:absolute;inset:0;overflow:hidden}.orange{background:var(--orange)}.cream{background:var(--cream)}.dark{background:var(--dark);color:var(--cream)}
+    h1,h2,p{margin:0}.mono{font-family:'Geist Mono',monospace;font-weight:500}.heavy{font-weight:900;letter-spacing:-.065em}
+    .top{position:absolute;left:100px;right:100px;top:66px;display:flex;align-items:center;justify-content:space-between;font-size:28px;line-height:1.4}
+    .brand{font-size:44px;letter-spacing:-.06em;font-weight:900}.rule{position:absolute;left:100px;right:100px;top:147px;height:2px;background:currentColor;opacity:.45}
+    .foot{position:absolute;left:100px;right:100px;bottom:66px;display:flex;justify-content:space-between;font-size:27px;line-height:1.4}
+    .hook-copy{position:absolute;left:94px;top:248px;width:1160px}
+    .hook-line{font-size:192px;line-height:1.05;white-space:nowrap;display:block;width:1160px}
+    #hook-two{display:flex;align-items:center;gap:40px;margin-top:20px}
+    .reverse{display:block;background:var(--ink);color:var(--cream);padding:0 37px 14px 20px;font-style:italic;line-height:1.04}
+    .hook-note{position:absolute;left:104px;top:783px;font-size:38px;letter-spacing:-.025em}
+    .hero-stack{position:absolute;left:1290px;top:351px;width:510px;height:394px}
+    .hero-card{position:absolute;width:510px;height:315px;background:var(--cream);border:8px solid var(--cream);box-shadow:0 18px 0 rgba(43,15,8,.2)}
+    .hero-card img{display:block;width:494px;height:278px;object-fit:cover}.hero-card .bar{height:21px;background:var(--cream)}
+    .hero-label{position:absolute;top:370px;left:4px;width:500px;font-size:25px}
+    #command-title{position:absolute;left:100px;top:205px;font-size:121px;line-height:1.08}
+    .terminal{position:absolute;left:100px;top:397px;width:1720px;height:466px;background:var(--ink);color:var(--cream);border-radius:18px;box-shadow:0 22px 0 rgba(49,17,9,.12);overflow:hidden}
+    .terminal-top{height:83px;border-bottom:2px solid rgba(248,235,229,.22);display:flex;align-items:center;gap:14px;padding:0 38px;font-size:26px;color:var(--muted)}
+    .dot{width:13px;height:13px;border-radius:100%;background:var(--orange)}.terminal-label{margin-left:18px}
+    .prompt-row{position:absolute;left:56px;top:134px;height:154px;display:flex;align-items:center;gap:28px}
+    .prompt-sign{font-size:96px;color:var(--orange);line-height:1}.command{display:block;white-space:pre;font-size:103px;line-height:1.3;letter-spacing:-.045em;width:710px;max-width:calc(var(--hf-type-progress,1)*710px);overflow:hidden}
+    .char{display:block;white-space:pre}.cursor{width:9px;height:105px;background:var(--orange);margin-left:10px}
+    .terminal-bottom{position:absolute;left:60px;right:60px;bottom:45px;display:flex;justify-content:space-between;font-size:29px;color:var(--muted)}
+    #result-title{position:absolute;left:100px;top:202px;font-size:110px;line-height:1.1}
+    .monitor{position:absolute;left:100px;top:357px;width:1112px;height:668px;border:3px solid var(--muted);border-radius:12px;background:var(--ink)}
+    .monitor-bar{height:40px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;font-size:22px;color:var(--muted)}
+    #result-video{position:absolute;left:103px;top:400px;width:1106px;height:622.125px;object-fit:cover;border-radius:0 0 9px 9px;z-index:3}
+    .output-list{position:absolute;left:1300px;top:436px;width:530px}
+    .output-label{font-size:26px;color:var(--muted);margin-bottom:45px}
+    .file-row{font-size:41px;line-height:1.6;letter-spacing:-.045em;white-space:nowrap;display:flex;align-items:center;gap:19px;margin-bottom:20px}
+    .file-icon{width:25px;height:32px;border:2px solid var(--orange);border-radius:3px;flex:none}
+    .result-note{font-size:31px;line-height:1.45;color:var(--muted);margin-top:53px}
+    #gallery-title{position:absolute;left:100px;top:213px;font-size:101px;line-height:1.1}
+    .gallery-card{position:absolute;border:7px solid var(--ink);background:var(--ink);color:var(--cream);box-shadow:0 19px 0 rgba(43,15,8,.14);border-radius:8px;overflow:hidden}
+    .gallery-card img{display:block;width:100%;object-fit:cover}.card-name{font-size:26px;padding:20px 19px;line-height:1.2}
+    #gallery-horse{left:99px;top:453px;width:514px}#gallery-horse img{height:281px}
+    #gallery-fish{left:655px;top:383px;width:610px}#gallery-fish img{height:336px}
+    #gallery-taxi{left:1307px;top:471px;width:514px}#gallery-taxi img{height:281px}
+    #outro-title{position:absolute;left:90px;top:225px;font-size:252px;line-height:1.08;width:1750px;white-space:nowrap}
+    .outro-strip{position:absolute;left:100px;top:624px;width:1720px;height:163px;background:var(--ink);color:var(--cream);display:flex;align-items:center;padding:0 54px;gap:50px}
+    .outro-mark{font-size:75px;letter-spacing:-.075em;font-weight:900}.outro-url{font-size:44px;letter-spacing:-.045em}
+    .outro-arrow{margin-left:auto;font-size:83px;line-height:1}
+    .progress{position:absolute;left:0;bottom:0;width:1920px;height:10px;background:var(--ink);z-index:20;transform-origin:left center}
+  </style>
+</head>
+<body>
+<div id="root" data-composition-id="brag-film" data-width="1920" data-height="1080" data-duration="20" data-fps="30">
+  <section id="hook" class="scene clip orange" data-start="0" data-duration="3.7" data-track-index="1">
+    <div class="top"><span class="brand">/brag</span><span class="mono">from repo to reel</span></div><div class="rule"></div>
+    <div class="hook-copy"><h1 id="hook-one" class="hook-line heavy">you built it.</h1><div id="hook-two" class="hook-line heavy"><span>now</span><span class="reverse">brag.</span></div></div>
+    <p id="hook-note" class="hook-note">Turn your project into a launch video.</p>
+    <div id="hero-stack" class="hero-stack"><div id="hero-back" class="hero-card"><img src="assets/examples/taxi-for-taxis.jpg" alt="Taxi for Taxis example"><div class="bar"></div></div><div id="hero-front" class="hero-card"><img src="assets/examples/horse-tinder.jpg" alt="Horse Tinder example"><div class="bar"></div></div><div class="hero-label mono">built with /brag ↗</div></div>
+    <div class="foot mono"><span>one skill. one command.</span><span>01 / 05</span></div>
+  </section>
+  <section id="command-scene" class="scene clip cream" data-start="3.7" data-duration="4.74" data-track-index="1">
+    <div class="top"><span class="brand">/brag</span><span class="mono">inside your project</span></div><div class="rule"></div>
+    <h2 id="command-title" class="heavy">one command.</h2>
+    <div id="terminal" class="terminal"><div class="terminal-top mono"><i class="dot"></i><i class="dot"></i><i class="dot"></i><span class="terminal-label">coding agent / project</span></div><div class="prompt-row mono"><span class="prompt-sign">›</span><div id="typed-command" class="command" data-layout-allow-overflow>let's /brag</div><span id="cursor" class="cursor"></span></div><div id="terminal-bottom" class="terminal-bottom mono"><span>reads your project</span><span>plans the story ↗</span></div></div>
+    <div class="foot mono"><span>project → prompt → launch video</span><span>02 / 05</span></div>
+  </section>
+  <section id="result-scene" class="scene clip dark" data-start="8.44" data-duration="4.21" data-track-index="1">
+    <div class="top"><span class="brand">/brag</span><span class="mono">the output</span></div><div class="rule"></div>
+    <h2 id="result-title" class="heavy">your project, in motion.</h2>
+    <div class="monitor"><div class="monitor-bar mono"><span>horse tinder / actual example</span><span>▶</span></div></div>
+    <div class="output-list"><p class="output-label mono">brag-output/</p><div id="file-video" class="file-row mono"><i class="file-icon"></i><span>brag.mp4</span></div><div id="file-poster" class="file-row mono"><i class="file-icon"></i><span>brag.jpg</span></div><div id="file-caption" class="file-row mono"><i class="file-icon"></i><span>share-copy.txt</span></div><p class="result-note">A video, a poster, and the words to post it.</p></div>
+  </section>
+  <video id="result-video" class="clip" src="assets/examples/horse-tinder.mp4" data-start="8.44" data-duration="4.21" data-media-start="5.8" data-track-index="2" muted playsinline></video>
+  <section id="gallery-scene" class="scene clip cream" data-start="12.65" data-duration="3.69" data-track-index="1">
+    <div class="top"><span class="brand">/brag</span><span class="mono">real examples from the repository</span></div><div class="rule"></div>
+    <h2 id="gallery-title" class="heavy">music. motion. share copy.</h2>
+    <div id="gallery-horse" class="gallery-card"><img src="assets/examples/horse-tinder.jpg" alt="Horse Tinder launch video"><div class="card-name mono">horse tinder</div></div>
+    <div id="gallery-fish" class="gallery-card"><img src="assets/examples/fish-flight-school.jpg" alt="Fish Flight School launch video"><div class="card-name mono">fish flight school</div></div>
+    <div id="gallery-taxi" class="gallery-card"><img src="assets/examples/taxi-for-taxis.jpg" alt="Taxi for Taxis launch video"><div class="card-name mono">taxi for taxis</div></div>
+    <div class="foot mono"><span>your project gets its own story.</span><span>04 / 05</span></div>
+  </section>
+  <section id="outro" class="scene clip orange" data-start="16.34" data-duration="3.66" data-track-index="1">
+    <div class="top"><span class="brand">/brag</span><span class="mono">you built it.</span></div><div class="rule"></div>
+    <h2 id="outro-title" class="heavy">now go brag.</h2>
+    <div id="outro-strip" class="outro-strip"><span class="outro-mark">/brag</span><span class="outro-url mono">github.com/latent-spaces/brag</span><span id="outro-arrow" class="outro-arrow">↗</span></div>
+    <div class="foot mono"><span>powered by Hyperframes</span><span>05 / 05</span></div>
+  </section>
+  <div id="progress" class="progress" data-layout-ignore></div>
+  <audio id="music" src="assets/music/bed.wav" data-start="0" data-duration="20" data-track-index="10" data-volume="0.32"></audio>
+  <audio id="key1" src="assets/sfx/key.wav" data-start="4.64" data-duration="0.15" data-track-index="11" data-volume="0.55"></audio>
+  <audio id="key2" src="assets/sfx/key.wav" data-start="4.82" data-duration="0.15" data-track-index="11" data-volume="0.55"></audio>
+  <audio id="key3" src="assets/sfx/key.wav" data-start="5.0" data-duration="0.15" data-track-index="11" data-volume="0.55"></audio>
+  <audio id="key4" src="assets/sfx/key.wav" data-start="5.18" data-duration="0.15" data-track-index="11" data-volume="0.55"></audio>
+  <audio id="reveal-sfx" src="assets/sfx/drop.ogg" data-start="8.44" data-duration="0.11" data-track-index="12" data-volume="0.55"></audio>
+  <audio id="outro-sfx" src="assets/sfx/drop.ogg" data-start="16.34" data-duration="0.11" data-track-index="12" data-volume="0.55"></audio>
+</div>
+<script>
+  const tl = gsap.timeline({paused:true});
+  tl.fromTo('#hook-one',{y:65,opacity:0},{y:0,opacity:1,duration:.48,ease:'power3.out'},.06);
+  tl.fromTo('#hook-two',{x:-95,opacity:0},{x:0,opacity:1,duration:.5,ease:'power4.out'},.24);
+  tl.fromTo('#hook-note',{y:25,opacity:0},{y:0,opacity:1,duration:.4,ease:'power2.out'},.66);
+  tl.fromTo('#hero-back',{rotation:-9,x:-24,y:-30,opacity:0},{rotation:-6,x:-24,y:-30,opacity:1,duration:.5,ease:'power2.out'},.35);
+  tl.fromTo('#hero-front',{y:140,rotation:12,opacity:0},{y:0,rotation:3,opacity:1,duration:.65,ease:'power3.out'},.45);
+  tl.fromTo('#hero-front',{rotation:3},{rotation:1,duration:2.55,ease:'sine.inOut',immediateRender:false},1.1);
+  // beat-locked: 3.70s, the command reveal follows the vol-9 strong cue.
+  tl.fromTo('#command-title',{x:70,opacity:0},{x:0,opacity:1,duration:.5,ease:'power3.out'},3.7);
+  tl.fromTo('#terminal',{y:85,scale:.96,opacity:0},{y:0,scale:1,opacity:1,duration:.55,ease:'power4.out'},3.86);
+  // Adapted from Hyperframes catalog typewriter: bounded progress and finite caret.
+  tl.fromTo('#typed-command',{'--hf-type-progress':0},{'--hf-type-progress':1,duration:.715,ease:'steps(11)'},4.64);
+  tl.fromTo('#cursor',{opacity:1},{opacity:0,duration:.001,repeat:7,repeatDelay:.38,yoyo:true,ease:'none'},4.5);
+  tl.fromTo('#terminal-bottom',{opacity:0,y:14},{opacity:1,y:0,duration:.4,ease:'power2.out'},5.85);
+  // beat-locked: 8.44s, real rendered product output.
+  tl.fromTo('#result-title',{y:40,opacity:0},{y:0,opacity:1,duration:.44,ease:'power4.out'},8.44);
+  tl.fromTo('#file-video',{x:35,opacity:0},{x:0,opacity:1,duration:.35,ease:'power2.out'},8.94);
+  tl.fromTo('#file-poster',{x:35,opacity:0},{x:0,opacity:1,duration:.35,ease:'power2.out'},9.12);
+  tl.fromTo('#file-caption',{x:35,opacity:0},{x:0,opacity:1,duration:.35,ease:'power2.out'},9.3);
+  // beat-locked: 12.65s. All three labels settle early and hold together.
+  tl.fromTo('#gallery-title',{y:35,opacity:0},{y:0,opacity:1,duration:.45,ease:'power3.out'},12.65);
+  tl.fromTo('#gallery-horse',{x:-160,rotation:-6,opacity:0},{x:0,rotation:-2,opacity:1,duration:.6,ease:'power3.out'},12.7);
+  tl.fromTo('#gallery-fish',{y:150,opacity:0},{y:0,opacity:1,duration:.6,ease:'power4.out'},12.83);
+  tl.fromTo('#gallery-taxi',{x:160,rotation:6,opacity:0},{x:0,rotation:2,opacity:1,duration:.6,ease:'power3.out'},12.97);
+  tl.fromTo('#outro-title',{x:-110,opacity:0},{x:0,opacity:1,duration:.56,ease:'power4.out'},16.34);
+  tl.fromTo('#outro-strip',{y:90,opacity:0},{y:0,opacity:1,duration:.5,ease:'power3.out'},16.58);
+  tl.fromTo('#outro-arrow',{x:-13,y:13},{x:0,y:0,duration:1.4,ease:'sine.inOut',repeat:1,yoyo:true},17.1);
+  tl.fromTo('#progress',{scaleX:0},{scaleX:1,duration:20,ease:'none'},0);
+  // Extracted music bass controls the presence of the existing hero cards.
+  // Absolute values per sample keep this deterministic under random seeking.
+  const stack = document.getElementById('hero-stack');
+  for(let f=0;f<111;f++) {
+    const bass=AUDIO_DATA.frames[f].bands[0];
+    tl.set(stack,{scale:1+bass*.018},f/30);
+  }
+  window.__timelines = window.__timelines || {};
+  window.__timelines['brag-film'] = tl;
+</script>
+</body>
+</html>
